@@ -18,14 +18,12 @@ export default class AppShell extends Component {
 
     return (
       <div className="pair-app-shell">
-        <Header { ...state } toggleMenu={this.toggleMenu} />
         <Menu { ...state } toggleMenu={this.toggleMenu} />
         <main role="main">
+          <Header { ...state } toggleMenu={this.toggleMenu} />
           {this.props.children}
         </main>
-
         <footer>footer</footer>
-
       </div>
     )
   }
