@@ -1,4 +1,7 @@
 import React, { Component, PropTypes } from 'react'
+import AppBar from 'material-ui/AppBar';
+import Header from '../header'
+import Menu from '../menu'
 
 export default class AppShell extends Component {
   constructor (props) {
@@ -9,7 +12,8 @@ export default class AppShell extends Component {
     const { state, props } = this
     return (
       <div className="pair-app-shell">
-        <header>header</header>
+        <Header />
+        <Menu />
         <main role="main">
           {this.props.children}
         </main>
