@@ -5,19 +5,21 @@ import Menu from '../menu'
 export default class AppShell extends Component {
   constructor (props) {
     super(props)
-    this.state = {open: false};
+    this.state = {menuOpen: false};
+    this.toggleMenu = this.toggleMenu.bind(this)
   }
 
   toggleMenu () {
-    this.setState({open: !this.state.open});
+    this.setState({menuOpen: !this.state.menuOpen});
   }
 
   render () {
-    //const { state, props } = this
+    const { state } = this
+
     return (
       <div className="pair-app-shell">
-        <Header toggleMenu={this.toggleMenu} />
-        <Menu toggleMenu={this.toggleMenu} />
+        <Header { ...state } toggleMenu={this.toggleMenu} />
+        <Menu { ...state } toggleMenu={this.toggleMenu} />
         <main role="main">
           {this.props.children}
         </main>

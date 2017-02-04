@@ -19,5 +19,5 @@ const Header = props => {
 export default Header
 
 Header.propTypes = {
-  toggleMenu: PropTypes.function
+  toggleMenu: PropTypes.any
 }
