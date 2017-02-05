@@ -1,11 +1,14 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
+import { render } from 'react-dom'
+import router from './router'
 import './index.css';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
+import App from './App'
 
-ReactDOM.render(
-  <App />,
-  document.getElementById('root')
-);
+render(
+  <App>
+    {router}
+  </App>,
+  document.querySelector('#root')
+)

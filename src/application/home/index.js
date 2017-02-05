@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import App from '../../app'
+import App from '../../App'
 
 const Home = (props) => {
   return (
@@ -12,4 +9,4 @@ const Home = (props) => {
   );
 }
 
-export default App;
+export default Home;

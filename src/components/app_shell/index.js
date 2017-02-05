@@ -23,7 +23,6 @@ export default class AppShell extends Component {
           <Header { ...state } toggleMenu={this.toggleMenu} />
           {this.props.children}
         </main>
-        <footer>footer</footer>
       </div>
     )
   }
