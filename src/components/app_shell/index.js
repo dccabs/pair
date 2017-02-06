@@ -5,12 +5,16 @@ import Menu from '../menu'
 export default class AppShell extends Component {
   constructor (props) {
     super(props)
-    this.state = {menuOpen: false};
+    this.state = {menuOpen: false, numbers: ''};
     this.toggleMenu = this.toggleMenu.bind(this)
   }
 
   toggleMenu () {
     this.setState({menuOpen: !this.state.menuOpen});
+  }
+
+  onUpdateNumbers () {
+    console.log('onUpdateNumberss')
   }
 
   render () {

@@ -6,7 +6,15 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 
 const Home = (props) => {
+  console.log(props)
+  let pubNumbers = ""
+  const handleUpdate = () => {
+    console.log(pubNumbers)
+  }
   const handleSubmit = () => {
+    console.log('handleSubmit')
+  }
+  const getResponse = (id) => {
     const xhr = window.fetch('https://pairbulkdata.uspto.gov/api/queries', {
       method: 'POST',
       headers: {
@@ -43,6 +51,8 @@ const Home = (props) => {
               style={{width: '100%'}}
               floatingLabelText="Patent Codes"
               multiLine
+              value={pubNumbers}
+              onChange={handleUpdate}
               hintText="1 code per line"
             />
             <RaisedButton
