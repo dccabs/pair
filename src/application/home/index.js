@@ -8,7 +8,7 @@ export default class Home extends Component {
 
   constructor (props) {
     super(props)
-    this.state = {pubNumbers: '', results: [], loading: false, loadingCount: 0};
+    this.state = {inputNumbers: '', results: [], loading: false, loadingCount: 0};
     this.handleUpdate = this.handleUpdate.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.getResponse = this.getResponse.bind(this)
@@ -16,35 +16,71 @@ export default class Home extends Component {
 
   handleUpdate (e) {
     const val = e.target.value
-    this.setState({ pubNumbers: val})
+    this.setState({ inputNumbers: val})
   }
 
   handleSubmit () {
-    const { pubNumbers } = this.state;
-    this.parseNumbers(pubNumbers)
+    this.setState({results: []});
+    const { inputNumbers } = this.state;
+    this.parseNumbers(inputNumbers)
   }
 
-  parseNumbers (pubNumbers) {
-    console.log('pubNumbers', pubNumbers)
-    pubNumbers = pubNumbers.replace(/[\n\r]/g, ',');
-    pubNumbers = pubNumbers.replace(/US/g, '');
-    console.log('pubNumbers with commas', pubNumbers)
-    pubNumbers = pubNumbers.split(',');
+  parseNumbers (inputNumbers) {
+    inputNumbers = inputNumbers.replace(/[\n\r]/g, ',');
+    inputNumbers = inputNumbers.replace(/US/g, '');
+    inputNumbers = inputNumbers.split(',');
 
-    const formattedNumbers = pubNumbers.map((num, i) => {
-      console.log(i)
-      console.log(String(num))
-      const result = num.replace(/(\d{4})/, "$1-");
+    const formattedNumbers = inputNumbers.map((num, i) => {
+      const l = num.length;
+      let numberType = null
+      if (l===11) {
+        numberType = 'publicationNumber';
+      }
+      else if (l===7) {
+        numberType = 'patentNumber';
+      }
+      else if (num.indexOf("/") !== -1) {
+        numberType = 'applicationNumber';
+      }
+      let result = {}
+      if (numberType==='publicationNumber') {
+        result = {
+          number: num.replace(/(\d{4})/, "$1-"),
+          format: numberType
+        }
+      }
+      if (numberType==='patentNumber') {
+        result = {
+          number: num,
+          format: numberType
+        }
+      }
+
+      if (numberType==='applicationNumber') {
+        result = {
+          number: num.replace("/", ""),
+          format: 'applicationNumber'
+        }
+      }
       return result;
     })
-    console.log(formattedNumbers)
     this.setState({ loading: true, loadingCount:formattedNumbers.length })
-    formattedNumbers.forEach((number, i) => {
-      this.getResponse(number, i)
+    formattedNumbers.forEach((result, i) => {
+      this.getResponse(result, i)
     })
   }
 
-  getResponse (number, index) {
+  getResponse (result, index) {
+    let searchText = ""
+    if (result.format==='publicationNumber') {
+      searchText = `appEarlyPubNumber:(${result.number})`
+    }
+    if (result.format==='patentNumber') {
+      searchText = `patentNumber:(${result.number})`
+    }
+    if (result.format==='applicationNumber') {
+      searchText = `applId:(${result.number})`
+    }
     window.fetch('https://pairbulkdata.uspto.gov/api/queries', {
       method: 'POST',
       headers: {
@@ -58,7 +94,7 @@ export default class Home extends Component {
         fq: [],
         mm: '100%',
         qf: 'appEarlyPubNumber applId appLocation appType appStatus_txt appConfrNumber appCustNumber appGrpArtNumber appCls appSubCls appEntityStatus_txt patentNumber patentTitle primaryInventor firstNamedApplicant appExamName appExamPrefrdName appAttrDockNumber appPCTNumber appIntlPubNumber wipoEarlyPubNumber pctAppType firstInventorFile appClsSubCls rankAndInventorsList',
-        searchText: `appEarlyPubNumber:(${number})`,
+        searchText,
         sort: 'applId asc',
         start: '0'
       }),
@@ -67,7 +103,6 @@ export default class Home extends Component {
     }).then(responseData => {
       return responseData.queryResults.searchResponse.response
     }).then(data => {
-      console.log(index, data)
       const loadingCount = this.state.loadingCount - 1
       const results = this.state.results
       results.push(data.docs[0])
@@ -78,7 +113,7 @@ export default class Home extends Component {
     })
   }
   render () {
-    const { pubNumbers, loadingCount, results } = this.state;
+    const { inputNumbers, loadingCount, results } = this.state;
     return (
       <div style={{'padding': '20px 10%'}}>
         <Card>
@@ -90,7 +125,7 @@ export default class Home extends Component {
                 style={{width: '100%'}}
                 floatingLabelText="Patent Codes"
                 multiLine
-                value={pubNumbers}
+                value={inputNumbers}
                 onChange={this.handleUpdate}
                 hintText="1 code per line"
               />

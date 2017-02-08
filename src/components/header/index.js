@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react'
+import React, { PropTypes } from 'react'
 import AppBar from 'material-ui/AppBar';
 
 import { blueGrey500 } from 'material-ui/styles/colors'
